@@ -1,0 +1,9 @@
+2020-01-24 16:32:15.641 EAT [10573] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2020-01-24 16:32:15.641 EAT [10573] LOG:  listening on IPv6 address "::1", port 5432
+2020-01-24 16:32:15.642 EAT [10573] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2020-01-24 16:32:15.714 EAT [10574] LOG:  database system was shut down at 2020-01-23 20:40:01 EAT
+2020-01-24 16:32:15.732 EAT [10573] LOG:  database system is ready to accept connections
+2020-01-24 18:19:55.104 EAT [10573] LOG:  received smart shutdown request
+2020-01-24 18:19:55.106 EAT [10573] LOG:  background worker "logical replication launcher" (PID 10580) exited with exit code 1
+2020-01-24 18:19:55.106 EAT [10575] LOG:  shutting down
+2020-01-24 18:19:55.117 EAT [10573] LOG:  database system is shut down
