@@ -1,23 +1,17 @@
-import { DB } from "../lib";
-import dotenv from 'dotenv';
+require('dotenv').config();
 
-dotenv.config();
-
-const PORT = process.env.PORT
-const NODE_ENV = process.env.NODE_ENV
-const DB: { [key: string]: DB} = {
+module.exports = {
   development: {
     database: process.env.DB_NAME,
     dialect: 'postgres',
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
+    host: '127.0.0.1',
   },
   production: {
     database: process.env.DB_NAME,
     dialect: 'postgres',
     username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    password: process.env.DB_PASSWORD
   }
-}
-
-export { PORT, NODE_ENV, DB }
+};

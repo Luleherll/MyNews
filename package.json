@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon dist/src/index.js",
+    "start": "node dist/src/index.js",
     "start:dev": "tsc && nodemon dist/src/index.js",
     "test": "nyc mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
