@@ -2,6 +2,7 @@ dist
 .env
 .history
 node_modules
+logfile
 # test
 coverage
 .nyc_output

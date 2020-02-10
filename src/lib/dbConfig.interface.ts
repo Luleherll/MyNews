@@ -3,6 +3,7 @@ interface DB {
   database: string | undefined
   password: string | undefined
   username: string | undefined
+  useEnvVariable?: string
 }
 
 export { DB }
