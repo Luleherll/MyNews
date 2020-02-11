@@ -7,6 +7,8 @@ dotenv.config();
 const PORT = process.env.PORT
 const NODE_ENV = process.env.NODE_ENV
 const logEnv = NODE_ENV === 'production' ? 'info' : 'debug';
+const JWT_ISSUER = process.env.JWT_ISSUER
+const JWT_SECRET = process.env.JWT_SECRET
 const DB: { [key: string]: DB} = {
   development: {
     database: process.env.DB_NAME,
@@ -22,4 +24,4 @@ const DB: { [key: string]: DB} = {
   }
 }
 
-export { PORT, NODE_ENV, DB, Logger, logEnv }
+export { PORT, NODE_ENV, DB, JWT_ISSUER, JWT_SECRET, Logger, logEnv }

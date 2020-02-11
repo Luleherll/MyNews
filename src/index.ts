@@ -3,9 +3,8 @@ import bodyParser from "body-parser";
 import morgan from "morgan";
 import cors from "cors";
 
-import { main } from "./routes";
+import routes from "./routes";
 import { PORT, Logger, logEnv } from "./config";
-// import dbConnection from './models'
 
 const app = express();
 
@@ -19,11 +18,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-// Database connection
-// dbConnection()
-
 // routes
-app.use("/api/v1", main);
+app.use('/api/v1', routes);
 
 const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
