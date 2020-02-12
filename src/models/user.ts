@@ -32,6 +32,10 @@ class User extends Sequelize.Model {
         isAdmin: {
           type: Sequelize.BOOLEAN,
           defaultValue: false
+        },
+        verified: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
         }
       },
       { sequelize }

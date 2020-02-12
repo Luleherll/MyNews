@@ -3,13 +3,15 @@ import path from 'path';
 import { Sequelize } from 'sequelize';
 import { NODE_ENV } from '../config';
 import conf from '../config/config';
+import { errorHandlers } from '../utils';
 
 const config = conf[NODE_ENV];
 
 const sequelize = new Sequelize(config.database, config.username, config.password, {
   dialect: config.dialect,
 });
-sequelize.sync({ force: true, logging: false });
+errorHandlers.checkDbConnection(sequelize);
+sequelize.sync({ force: true, logging: false })
 
 // Load each model file
 const models = Object.assign({}, ...fs.readdirSync(__dirname)
@@ -32,4 +34,7 @@ for (const model of Object.keys(models)) {
   typeof models[model].associate === 'function' && models[model].associate(models);
 }
 
+const connection = sequelize;
+
+export { connection  }
 export default models;

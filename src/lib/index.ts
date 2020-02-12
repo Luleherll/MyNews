@@ -1,3 +1,3 @@
-import { DB } from './dbConfig.interface';
+import { DB, IEmailTemplate, IError } from './interfaces';
 
-export { DB }
+export { DB, IEmailTemplate, IError }

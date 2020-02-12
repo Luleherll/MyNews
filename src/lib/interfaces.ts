@@ -6,4 +6,15 @@ interface DB {
   useEnvVariable?: string
 }
 
-export { DB }
+interface IEmailTemplate {
+  subject: string
+  text: string
+  template: string
+}
+
+interface IError {
+  error: string;
+  status: number;
+}
+
+export { DB, IEmailTemplate, IError }

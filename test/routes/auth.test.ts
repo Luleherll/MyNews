@@ -1,6 +1,7 @@
 import chai from "chai";
 import chaiHttp from "chai-http";
 import sinon from "sinon";
+import sendGrid from '@sendgrid/mail';
 
 import server from "../../src";
 import DB from "../../src/models";
@@ -22,13 +23,15 @@ describe("User", () => {
     it("should be successful", async () => {
       sandBox.stub(DB.User, "findOne").returns(null);
       sandBox.stub(DB.User, "create").returns(newUser);
+      sandBox.stub(sendGrid, 'send').resolves({});
       
 
       const response = await chai
         .request(server)
         .post("/api/v1/signup")
         .send({ user: userObj });
-      expect(response).to.have.status(201);
+
+      expect(response).to.have.status(200);
     });
 
     it("should validate user data", async () => {

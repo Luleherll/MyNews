@@ -3,6 +3,7 @@ dist
 .history
 node_modules
 logfile
+*.log
 # test
 coverage
 .nyc_output

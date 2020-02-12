@@ -1,0 +1,5 @@
+const SEND_EMAIL = 'SEND_EMAIL';
+const SUCCESS = 'EVENT_SUCCESS';
+const ERROR = 'EVENT_ERROR';
+
+export { SEND_EMAIL, SUCCESS, ERROR }
