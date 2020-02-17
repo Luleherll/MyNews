@@ -1,10 +1,12 @@
 import { DB } from "../lib";
 import dotenv from 'dotenv';
+import Logger from './winston';
 
 dotenv.config();
 
 const PORT = process.env.PORT
 const NODE_ENV = process.env.NODE_ENV
+const logEnv = NODE_ENV === 'production' ? 'info' : 'debug';
 const DB: { [key: string]: DB} = {
   development: {
     database: process.env.DB_NAME,
@@ -20,4 +22,4 @@ const DB: { [key: string]: DB} = {
   }
 }
 
-export { PORT, NODE_ENV, DB }
+export { PORT, NODE_ENV, DB, Logger, logEnv }
