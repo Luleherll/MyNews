@@ -1,14 +1,55 @@
-import { Table, Column, Model } from 'sequelize-typescript';
+"use strict";
 
-@Table
-export default class User extends Model<User> {
+const Sequelize = require("sequelize");
 
-  @Column
-  username: string | undefined;
+class User extends Sequelize.Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        id: {
+          type: Sequelize.UUID,
+          allowNull: false,
+          autoIncrement: false,
+          primaryKey: true,
+          defaultValue: Sequelize.UUIDV4
+        },
+        username: {
+          type: Sequelize.STRING,
+          allowNull: false
+        },
+        email: {
+          type: Sequelize.STRING,
+          allowNull: false
+        },
+        password: {
+          type: Sequelize.STRING,
+          allowNull: false
+        },
+        photo: {
+          type: Sequelize.STRING,
+          allowNull: true
+        },
+        isAdmin: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
+        },
+        verified: {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
+        }
+      },
+      { sequelize }
+    );
+  }
 
-  @Column
-  email: String | undefined;
+  static associate(models) {
+    this.hasMany(models.News);
+  }
 
-  // @Column
-  // password: String | undefined;
+  filtered() {
+    const { id, updatedAt, createdAt, password, ...other} = this.dataValues;
+    return other;
+  }
 }
+
+export = User;
