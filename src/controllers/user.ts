@@ -2,7 +2,7 @@ import { JwtUtil, Response } from "../utils";
 import Queries from "../lib/queries";
 import { userFields } from "../lib/validation";
 import Emitter from "../lib/events";
-import { SEND_EMAIL } from "../lib/events/constants";
+import { EVENTS } from "../lib/constants";
 import { emailVerification } from "../utils/mailer/templates";
 
 export default class UserController {
@@ -15,7 +15,7 @@ export default class UserController {
     const { user } = req.body;
 
     const newUser = await Queries.addData(this.model, user, userFields);
-    Emitter.emit(SEND_EMAIL, emailVerification(newUser), res, next);
+    Emitter.emit(EVENTS.SEND_EMAIL, emailVerification(newUser), res, next);
   };
 
   verifyEmail = async (req: any, res: any, next: any) => {

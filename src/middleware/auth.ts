@@ -2,12 +2,13 @@ import { signUp } from "../lib/validation";
 import Queries from "../lib/queries";
 import DB from "../models";
 import { JwtUtil } from "../utils";
+import { ERRORS, ROUTES } from "../lib/constants";
 
 const dataValidator = (req: any, res: any, next: any) => {
   const { user } = req.body;
   let message;
   if (!user) {
-    message = "User is required.";
+    message = ERRORS.MISSING_USER_OBJECT;
   } else {
     const { error } = signUp.validate(user);
 
@@ -23,15 +24,15 @@ const dataValidator = (req: any, res: any, next: any) => {
 };
 
 const tokenDecoder = (req: any, res: any, next: any) => {
-  const endpoint = req.url.slice(1, 13);
-  let token = endpoint === 'verify-email' ? req.query.code : req.headers.authorization;
+  const verifyEmail: boolean = req.url.includes(ROUTES.VERIFY_EMAIL)
+  let token: string = verifyEmail ? req.query.code : req.headers.authorization;
   token = token.split(' ')[1]
   const subject = JwtUtil.decodeToken(token);
   if (subject.error) {
     if (subject.error !== 'jwt expired') {
       return next(subject.error)
     }
-    return next({ error: 'Link has expired.', status: 400 })
+    return next(ERRORS.EXPIRED_JWT)
   }
 
   req.body['user'] = { email: subject.value };
@@ -42,17 +43,17 @@ const userValidator = async (req: any, res: any, next: any) => {
   const {
     user: { email }
   } = req.body;
-  const endpoint = req.url.slice(1);
+  const signup: boolean = req.url.includes(ROUTES.SIGNUP);
   const exists = await Queries.findData(DB.User, { email });
 
   if (exists) {
-    if (endpoint === "signup") {
-      return next({error: "User already exists.", status: 400});
+    if (signup) {
+      return next(ERRORS.USER_EXISTS);
     }
     req.body.user = exists
     return next()
   }
-  return !exists && endpoint === "signup" ? next() : next({ error: 'User is not registered.', status: 400 });
+  return !exists && signup ? next() : next(ERRORS.USER_NOT_REGISTERED);
 };
 
 export { dataValidator, userValidator, tokenDecoder };
