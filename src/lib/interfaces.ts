@@ -9,7 +9,7 @@ interface DB {
 interface IEmailTemplate {
   subject: string
   text: string
-  template: string
+  template: (token?: string) => string
 }
 
 interface IError {

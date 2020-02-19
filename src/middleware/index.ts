@@ -1,4 +1,4 @@
-import { dataValidator, userValidator } from './auth';
+import { dataValidator, userValidator, tokenDecoder } from './auth';
 import { errorHandlers, Response } from '../utils';
 import { connection } from '../models';
 import { IError } from '../lib';
@@ -35,4 +35,4 @@ const handleErrors = (err: IError, req: any, res: any, next: any) => {
   return Response.failure(res);
 }
 
-export { dataValidator, userValidator, dbConnection, handleErrors, checkEnvVariables }
+export { dataValidator, userValidator, tokenDecoder, dbConnection, handleErrors, checkEnvVariables }

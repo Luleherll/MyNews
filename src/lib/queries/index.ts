@@ -1,3 +1,5 @@
+import { Model } from "sequelize/types";
+
 export default class ModelQueries {
   static addData = (model: any, data: Object, permit: string[]) => model.create(data, { fields: permit })
 
@@ -8,4 +10,6 @@ export default class ModelQueries {
 
     return data;
   }
+
+  static update = async (model: Model, attributes: object) => model.update(attributes)
 }
