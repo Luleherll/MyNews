@@ -1,3 +1,5 @@
+import { IError } from "../lib";
+
 const checkDbConnection = (connection) => connection
 .authenticate()
 .then(() => {
@@ -6,4 +8,6 @@ const checkDbConnection = (connection) => connection
 })
 .catch(err => err);
 
-export { checkDbConnection }
+const createErrorObject = (error, status): IError =>  ({ error, status })
+
+export { checkDbConnection, createErrorObject }

@@ -21,7 +21,7 @@ const layout = (template: IEmailTemplate) => (user: any): object => ({
   
   <h2 style="font-weight: bolder;">Hello Herman,</h2>
   <div style="padding: 2%;">
-    ${template.template}
+    ${template.template(user)}
   </div>
   <div>Thank you, The MyNews team</div>
   </div>
