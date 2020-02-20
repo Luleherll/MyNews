@@ -25,6 +25,16 @@ export default class UserController {
     user = user.filtered();
     const accessToken = JwtUtil.getAuthToken(user.email);
 
+    return Response.success(res, { accessToken, user }, 201);
+  };
+
+  signIn = async (req: any, res: any, next: any) => {
+    let { user } = req.body;
+    user = user.filtered();
+    if (!user.verified) return Emitter.emit(EVENTS.SEND_EMAIL, emailVerification(user), res, next);
+
+    const accessToken = JwtUtil.getAuthToken(user.email);
+
     return Response.success(res, { accessToken, user }, 200);
   };
 }

@@ -23,7 +23,7 @@ describe("Token Decoder", () => {
     sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: "test@dev.com" });
 
     const nextSpy = sinon.spy();
-    await tokenDecoder({ url: "/verify-email", body: {}, query: { code: accessToken } }, {}, nextSpy);
+    await tokenDecoder({ route: { path: "/verify-email" }, body: {}, query: { code: accessToken } }, {}, nextSpy);
 
     expect(nextSpy.calledWith()).to.be.true;
   });
@@ -32,7 +32,7 @@ describe("Token Decoder", () => {
     sandBox.stub(JwtUtil, "decodeToken").returns({ error: "jwt expired", value: null });
 
     const nextSpy = sinon.spy();
-    await tokenDecoder({ url: "/verify-email", body: {}, query: { code: accessToken } }, {}, nextSpy);
+    await tokenDecoder({ route: { path: "/verify-email" }, body: {}, query: { code: accessToken } }, {}, nextSpy);
 
     expect(nextSpy.calledWith({ error: "Link has expired.", status: 400 })).to.be.true;
   });
@@ -41,7 +41,7 @@ describe("Token Decoder", () => {
     sandBox.stub(JwtUtil, "decodeToken").returns({ error: "invalid jwt", value: null });
 
     const nextSpy = sinon.spy();
-    await tokenDecoder({ url: "/secured", body: {}, headers: { authorization: accessToken } }, {}, nextSpy);
+    await tokenDecoder({ route: { path: "/secured" }, body: {}, headers: { authorization: accessToken } }, {}, nextSpy);
 
     expect(nextSpy.calledWith("invalid jwt")).to.be.true;
   });

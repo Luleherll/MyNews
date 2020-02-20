@@ -5,7 +5,7 @@ import sendGrid from "@sendgrid/mail";
 
 import server from "../../src";
 import DB from "../../src/models";
-import { newUser, userObj, accessToken } from "../mocks";
+import { newUser, userObj, accessToken, unverifiedUser } from "../mocks";
 import { JwtUtil } from "../../src/utils";
 import Queries from "../../src/lib/queries";
 
@@ -33,7 +33,7 @@ describe("User", () => {
         .post("/api/v1/signup")
         .send({ user: userObj });
 
-      expect(response).to.have.status(201);
+      expect(response).to.have.status(200);
     });
 
     it("should not register USER more than once", async () => {
@@ -47,7 +47,7 @@ describe("User", () => {
     });
   });
 
-  describe('Email verfication', () => {
+  describe('email verfication', () => {
     it('should be successful', async() => {
       sandBox.stub(DB.User, "findOne").returns(newUser);
       sandBox.stub(Queries, "update").returns(Promise.resolve(newUser));
@@ -58,7 +58,33 @@ describe("User", () => {
         .request(server)
         .get("/api/v1/verify-email")
         .query({ code: accessToken })
-      expect(response).to.have.status(200);
+      expect(response).to.have.status(201);
     });
+    });
+
+    describe("login", () => {
+      it("should be successful", async () => {
+        sandBox.stub(DB.User, "findOne").returns(newUser);
+
+        const response = await chai
+          .request(server)
+          .post("/api/v1/login")
+          .send({ user: {email: userObj.email, password: userObj.password } });
+  
+        expect(response).to.have.status(200);
+      });
+  
+      it("should not authenticate unverified USER", async () => {
+        sandBox.stub(DB.User, "findOne").returns(unverifiedUser);
+        sandBox.stub(sendGrid, "send").resolves({});
+        const spy = sinon.spy(JwtUtil, 'getAuthToken');
+  
+        const response = await chai
+          .request(server)
+          .post("/api/v1/login")
+          .send({ user: { email: userObj.email, password: userObj.password } });
+        expect(response).to.have.status(200);
+        expect(spy.notCalled).to.be.true;
+      });
     });
 });
