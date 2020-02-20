@@ -8,7 +8,7 @@ class AsyncEvents extends EventEmitter {
       const next = args[2]
     asyncFunc(...args).then(data => {
       if (typeof data === 'string') {
-        return Response.success(res, { message: data }, 201)
+        return Response.success(res, { message: data }, 200)
       } else { next(data) }
     })
     .catch(err => next(err))

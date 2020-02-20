@@ -8,5 +8,6 @@ const userDTO = {
 };
 
 const signUp = JOI.object(userDTO)
+const signIn = JOI.object({ email: userDTO.email, password: userDTO.password })
 
-export { signUp }
+export { signUp, signIn }
