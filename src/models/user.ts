@@ -1,6 +1,7 @@
 "use strict";
 
 const Sequelize = require("sequelize");
+import bcrypt from 'bcryptjs';
 
 class User extends Sequelize.Model {
   static init(sequelize) {
@@ -38,12 +39,24 @@ class User extends Sequelize.Model {
           defaultValue: false
         }
       },
-      { sequelize }
+      {
+        sequelize,
+        hooks: {
+          afterValidate: (user) => {
+            user.password = bcrypt.hashSync(user.password, 8);
+          },
+        }
+      }
     );
   }
 
   static associate(models) {
     this.hasMany(models.News);
+  }
+
+  validatePassword(password: string) {
+    console.log(this.password);
+    return bcrypt.compare(password, this.password)
   }
 
   filtered() {

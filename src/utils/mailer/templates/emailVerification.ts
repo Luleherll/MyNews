@@ -2,7 +2,7 @@ import { MAIL_RETURN_URL } from "../../../config";
 import { JwtUtil } from '../..';
 
 const verification = (user): string => {
-  let token = JwtUtil.getVerificationToken(user.email)
+  let {token} = JwtUtil.getVerificationToken({user})
   token = `Bearer ${token}`
   return `
 Thank you for registering an account on MyNews.
