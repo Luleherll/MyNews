@@ -12,29 +12,40 @@ export default class UserController {
   }
 
   signUp = async (req: any, res: any, next: any) => {
-    const { user } = req.body;
+    const { body: user } = req;
 
     const newUser = await Queries.addData(this.model, user, userFields);
     Emitter.emit(EVENTS.SEND_EMAIL, emailVerification(newUser), res, next);
   };
 
   verifyEmail = async (req: any, res: any, next: any) => {
-    let { user } = req.body;
+    let { body: user } = req;
 
     user = await Queries.update(user, { verified: true }).catch(err => next(err));
+    const { refreshToken } = Emitter.emitValue(EVENTS.GET_REFRESH_TOKEN, {user: user.id});
     user = user.filtered();
-    const accessToken = JwtUtil.getAuthToken(user.email);
-
-    return Response.success(res, { accessToken, user }, 201);
+    const { accessToken } = Emitter.emitValue(EVENTS.GET_AUTH_TOKEN, {user});
+  
+    return Response.success(res, { accessToken, refreshToken}, 201);
   };
 
   signIn = async (req: any, res: any, next: any) => {
-    let { user } = req.body;
-    user = user.filtered();
+    let { body: user } = req;
     if (!user.verified) return Emitter.emit(EVENTS.SEND_EMAIL, emailVerification(user), res, next);
 
-    const accessToken = JwtUtil.getAuthToken(user.email);
+    const { refreshToken } = Emitter.emitValue(EVENTS.GET_REFRESH_TOKEN, {user: user.id});
+    user = user.filtered();
+    const { accessToken } = Emitter.emitValue(EVENTS.GET_AUTH_TOKEN, {user});
 
-    return Response.success(res, { accessToken, user }, 200);
+    return Response.success(res, { accessToken, refreshToken}, 200);
   };
+
+  refreshToken = async(req, res, next) => {
+    const { body: id } = req;
+    let user = await Queries.findData(this.model, { id })
+    user = user.filtered();
+    const { accessToken } = Emitter.emitValue(EVENTS.GET_AUTH_TOKEN, {user});
+
+    return Response.success(res, { accessToken }, 200);
+  }
 }

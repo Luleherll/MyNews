@@ -6,7 +6,7 @@ import { ERRORS, ROUTES } from "../lib/constants";
 
 const dataValidator = (req: any, res: any, next: any) => {
   const {
-    body: { user },
+    body: user,
     route: { path }
   } = req;
   const map = { [ROUTES.SIGNUP]: signUp, [ROUTES.LOGIN]: signIn };
@@ -39,25 +39,30 @@ const tokenDecoder = (req: any, res: any, next: any) => {
     return next(ERRORS.EXPIRED_JWT);
   }
 
-  req.body["user"] = { email: subject.value };
+  req.body = subject.value;
   next();
 };
 
 const userValidator = async (req: any, res: any, next: any) => {
   const {
     body: {
-      user: { email }
+      email,
+      password
     },
     route: { path }
   } = req;
   const signup: boolean = path === ROUTES.SIGNUP;
+  const login: boolean = path === ROUTES.LOGIN;
   const exists = await Queries.findData(DB.User, { email });
 
   if (exists) {
     if (signup) {
       return next(ERRORS.USER_EXISTS);
     }
-    req.body.user = exists;
+    if (login && !exists.validatePassword(password)) {
+      return next(ERRORS.INVALID_CREDENTIALS);
+    }
+    req.body = exists;
     return next();
   }
   return !exists && signup ? next() : next(ERRORS.USER_NOT_REGISTERED);

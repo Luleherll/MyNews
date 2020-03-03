@@ -27,6 +27,7 @@ const checkEnvVariables = (req: any, res: any, next: any) => {
 }
 
 const handleErrors = (err: IError, req: any, res: any, next: any) => {
+  console.log(err);
   if (err.error) {
     return Response.failure(res, err.error, err.status)
   } else {

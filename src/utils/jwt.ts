@@ -1,28 +1,38 @@
 import * as JWT from "jsonwebtoken";
-import { JWT_ISSUER, JWT_SECRET, ONE_HOUR } from "../config";
+import { JWT_ISSUER, JWT_SECRET, ONE_HOUR, SEVEN_DAYS } from "../config";
 
 export default class JwtUtil {
   private static signToken = (sub: string, exp?) => {
-    const expiresIn = exp || new Date().setDate(new Date().getDate() + 1);
+    const expiresIn = exp || SEVEN_DAYS;
     return JWT.sign(
       {
         iss: JWT_ISSUER,
         sub,
         iat: new Date().getTime(),
-        exp: expiresIn
+        expiresIn: expiresIn
       },
       JWT_SECRET
     );
   };
 
-  static getAuthToken = (userId) => JwtUtil.signToken(userId);
+  static getAuthToken = (user) => {
+    user.accessToken = JwtUtil.signToken(user.user, ONE_HOUR)
+    return user
+  };
 
-  static getVerificationToken = (email) => JwtUtil.signToken(email, ONE_HOUR)
+  static getVerificationToken = (user) => {
+    user.token = JwtUtil.signToken(user.user, ONE_HOUR)
+    return user
+  } 
+
+  static getRefreshToken = (user) => {
+    user.refreshToken = JwtUtil.signToken(user.user);
+    return user
+  } 
 
   static decodeToken = (token: string) => {
     let subject = { error: null, value: null};
     try {
-      console.log(JWT.verify(token, JWT_SECRET).sub);
       subject.value = JWT.verify(token, JWT_SECRET).sub;
     } catch (e) {
       subject.error = e.message === 'jwt expired' ? e.message : {message: e.message, token};

@@ -31,7 +31,7 @@ describe("User", () => {
       const response = await chai
         .request(server)
         .post("/api/v1/signup")
-        .send({ user: userObj });
+        .send(userObj);
 
       expect(response).to.have.status(200);
     });
@@ -42,7 +42,7 @@ describe("User", () => {
       const response = await chai
         .request(server)
         .post("/api/v1/signup")
-        .send({ user: userObj });
+        .send(userObj);
       expect(response).to.have.status(400);
     });
   });
@@ -52,7 +52,7 @@ describe("User", () => {
       sandBox.stub(DB.User, "findOne").returns(newUser);
       sandBox.stub(Queries, "update").returns(Promise.resolve(newUser));
       sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: "test@dev.com" });
-      sandBox.stub(JwtUtil, "getAuthToken").returns(accessToken);
+      sandBox.stub(JwtUtil, "getAuthToken").returns({accessToken, user: {}});
 
       const response = await chai
         .request(server)
@@ -65,12 +65,13 @@ describe("User", () => {
     describe("login", () => {
       it("should be successful", async () => {
         sandBox.stub(DB.User, "findOne").returns(newUser);
+        sandBox.stub(JwtUtil, "getAuthToken").returns({accessToken, user: {}});
+        sandBox.stub(JwtUtil, "getRefreshToken").returns({ refreshToken: accessToken, user: {}});
 
         const response = await chai
           .request(server)
           .post("/api/v1/login")
-          .send({ user: {email: userObj.email, password: userObj.password } });
-  
+          .send({email: userObj.email, password: userObj.password });
         expect(response).to.have.status(200);
       });
   
@@ -82,9 +83,22 @@ describe("User", () => {
         const response = await chai
           .request(server)
           .post("/api/v1/login")
-          .send({ user: { email: userObj.email, password: userObj.password } });
+          .send({ email: userObj.email, password: userObj.password });
         expect(response).to.have.status(200);
         expect(spy.notCalled).to.be.true;
+      });
+    });
+
+    describe('Refresh token', () => {
+      it('should return new access token', async() => {
+        sandBox.stub(DB.User, "findOne").returns(newUser);
+        sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: newUser.id });
+
+        const response = await chai
+          .request(server)
+          .get("/api/v1/refresh-token")
+          .set({'Authorization': accessToken})
+        expect(response).to.have.status(200);
       });
     });
 });

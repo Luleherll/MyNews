@@ -34,7 +34,7 @@ describe("Token Decoder", () => {
     const nextSpy = sinon.spy();
     await tokenDecoder({ route: { path: "/verify-email" }, body: {}, query: { code: accessToken } }, {}, nextSpy);
 
-    expect(nextSpy.calledWith({ error: "Link has expired.", status: 400 })).to.be.true;
+    expect(nextSpy.calledWith({ error: "Link has expired.", status: 401 })).to.be.true;
   });
 
   it("should return error if token decoding has failed", async () => {

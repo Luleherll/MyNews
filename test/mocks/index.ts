@@ -1,12 +1,14 @@
 const newUser = {
   id: "useruuidtest",
+  verified: true,
   filtered: () => ({
     username: "test",
     email: "test@dev.com",
     photo: "http://cdn.com/profile-pic.jpg",
     isAdmin: false,
     verified: true
-  })
+  }),
+  validatePassword: () => true
 };
 
 const unverifiedUser = {
@@ -17,7 +19,8 @@ const unverifiedUser = {
     photo: "http://cdn.com/profile-pic.jpg",
     isAdmin: false,
     verified: false
-  })
+  }),
+  validatePassword: () => true
 };
 
 const userObj = {
