@@ -39,7 +39,7 @@ describe("User Validator", () => {
     it("should return error if user does not exist [except on signup]", async () => {
       sandBox.stub(DB.User, "findOne").returns(null);
       const nextSpy = sinon.spy();
-      await userValidator({ route: { path: '/login' }, body: { user: { email: 'test@dev.com' } }}, {}, nextSpy)
+      await userValidator({ route: { path: '/reset-password' }, body: { email: 'test@dev.com' } }, {}, nextSpy)
 
       expect(nextSpy.calledWith({ error: 'User is not registered.', status: 400 })).to.be.true;
     });

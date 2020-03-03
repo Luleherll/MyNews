@@ -1,5 +1,5 @@
-import { signUp, signIn } from './auth';
+import { signUp, signIn, passwordReset } from './auth';
 
 const userFields = ['username', 'email', 'password', 'photo']
 
-export { signUp, signIn, userFields };
+export { signUp, signIn, passwordReset, userFields };

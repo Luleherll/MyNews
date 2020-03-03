@@ -7,6 +7,8 @@ export default (router: any) => {
   router.route(ROUTES.VERIFY_EMAIL).get(tokenDecoder, userValidator, user.verifyEmail)
   router.route(ROUTES.LOGIN).post(dataValidator, userValidator, user.signIn)
   router.route(ROUTES.REFRESH_TOKEN).get(tokenDecoder, user.refreshToken)
+  router.route(ROUTES.PASSWORD_RESET).post(dataValidator, userValidator, user.passwordResetRequest)
+  router.route(ROUTES.PASSWORD_RESET).get(tokenDecoder, userValidator, user.passwordResetHandler)
 
   return router;
 }

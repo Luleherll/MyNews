@@ -11,7 +11,7 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
   dialect: config.dialect,
 });
 errorHandlers.checkDbConnection(sequelize);
-sequelize.sync({ force: true, logging: false })
+sequelize.sync({ logging: false })
 
 // Load each model file
 const models = Object.assign({}, ...fs.readdirSync(__dirname)

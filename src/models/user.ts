@@ -42,8 +42,10 @@ class User extends Sequelize.Model {
       {
         sequelize,
         hooks: {
-          afterValidate: (user) => {
-            user.password = bcrypt.hashSync(user.password, 8);
+          beforeSave: (user) => {
+            if (user.password) {
+              user.password = bcrypt.hashSync(user.password, 8);
+            }
           },
         }
       }
@@ -55,8 +57,7 @@ class User extends Sequelize.Model {
   }
 
   validatePassword(password: string) {
-    console.log(this.password);
-    return bcrypt.compare(password, this.password)
+    return bcrypt.compareSync(password, this.password)
   }
 
   filtered() {
