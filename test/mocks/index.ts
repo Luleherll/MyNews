@@ -8,6 +8,7 @@ const newUser = {
     isAdmin: false,
     verified: true
   }),
+  save: async() => newUser,
   validatePassword: () => true
 };
 

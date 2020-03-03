@@ -9,5 +9,6 @@ const userDTO = {
 
 const signUp = JOI.object(userDTO)
 const signIn = JOI.object({ email: userDTO.email, password: userDTO.password })
+const passwordReset = JOI.object({ email: userDTO.email, password: userDTO.password, confirmPassword: JOI.ref('password') }).with('password', 'confirmPassword');
 
-export { signUp, signIn }
+export { signUp, signIn, passwordReset }

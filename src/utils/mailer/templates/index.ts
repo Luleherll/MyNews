@@ -1,6 +1,7 @@
 import { AUTH_EMAIL } from '../../../config';
 import { IEmailTemplate } from '../../../lib';
 import verification from './emailVerification';
+import passwordReset from './resetPasswordEmail';
 
 const layout = (template: IEmailTemplate) => (user: any): object => ({
   to: user.email,
@@ -31,5 +32,6 @@ const layout = (template: IEmailTemplate) => (user: any): object => ({
 })
 
 const emailVerification = layout(verification);
+const resetPasswordEmail = layout(passwordReset)
 
-export { emailVerification };
+export { emailVerification, resetPasswordEmail };
