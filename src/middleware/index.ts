@@ -1,8 +1,9 @@
-import { dataValidator, userValidator, tokenDecoder } from './auth';
+import { userValidator, tokenDecoder } from './auth';
 import { errorHandlers, Response } from '../utils';
 import { connection } from '../models';
 import { IError } from '../lib';
 import * as env from '../config';
+import { validationMap } from '../lib/validation';
 
 const dbConnection = async(req: any, res: any, next: any) => {
   const error = await errorHandlers.checkDbConnection(connection);
@@ -35,5 +36,23 @@ const handleErrors = (err: IError, req: any, res: any, next: any) => {
   }
   return Response.failure(res);
 }
+
+const dataValidator = (req: any, res: any, next: any) => {
+  const {
+    body: data,
+    route: { path }
+  } = req;
+  let message;
+  const { error } = validationMap.get(path).validate(data);
+
+  if (error) {
+    const {
+      details: [first]
+    } = error;
+    message = first.message.replace('"', "").replace('"', "");
+  }
+
+  return (message && next({ error: message, status: 400 })) || next();
+};
 
 export { dataValidator, userValidator, tokenDecoder, dbConnection, handleErrors, checkEnvVariables }

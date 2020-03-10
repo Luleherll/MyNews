@@ -117,7 +117,7 @@ describe("User", () => {
 
       it('should return new access token', async() => {
         sandBox.stub(DB.User, "findOne").returns(newUser);
-        sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: newUser.filtered() });
+        sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: { email: newUser.filtered().email, password: 'testpass'} });
         sandBox.stub(JwtUtil, "getAuthToken").returns({accessToken, user: {}});
 
         const response = await chai
