@@ -1,31 +1,14 @@
-import { signUp, signIn, passwordReset } from "../lib/validation";
 import Queries from "../lib/queries";
 import DB from "../models";
 import { JwtUtil } from "../utils";
 import { ERRORS, ROUTES } from "../lib/constants";
 
-const dataValidator = (req: any, res: any, next: any) => {
-  const {
-    body: user,
-    route: { path }
-  } = req;
-  const map = { [ROUTES.SIGNUP]: signUp, [ROUTES.LOGIN]: signIn, [ROUTES.PASSWORD_RESET]: passwordReset };
-  let message;
-  if (!user) {
-    message = ERRORS.MISSING_USER_OBJECT;
-  } else {
-    const { error } = map[path].validate(user);
-
-    if (error) {
-      const {
-        details: [first]
-      } = error;
-      message = first.message.replace('"', "").replace('"', "");
-    }
+// Password reset helper
+const addPassword = (req, path, password) => {
+  if (path === ROUTES.PASSWORD_RESET) {
+    req.body.password = password
   }
-
-  return (message && next({ error: message, status: 400 })) || next();
-};
+}
 
 const tokenDecoder = (req: any, res: any, next: any) => {
   const { path } = req.route;
@@ -41,31 +24,31 @@ const tokenDecoder = (req: any, res: any, next: any) => {
     return next(ERRORS.EXPIRED_JWT);
   }
 
-  req.body = subject.value;
+  req.user = subject.value;
   next();
 };
 
 const userValidator = async (req: any, res: any, next: any) => {
-  const {
-    body: { email, password },
-    route: { path }
-  } = req;
+  const { email, password } = req.user || req.body;
+  const { path } = req.route;
   let isPath;
   const exists = await Queries.findData(DB.User, { email });
   const paths = {
     [ROUTES.SIGNUP]: { check: path === ROUTES.SIGNUP, error: ERRORS.USER_EXISTS },
-    [ROUTES.LOGIN]: { check: path === ROUTES.LOGIN && !exists.validatePassword(password), error: ERRORS.INVALID_CREDENTIALS }
+    [ROUTES.LOGIN]: { check: path === ROUTES.LOGIN && exists && !exists.validatePassword(password), error: ERRORS.INVALID_CREDENTIALS }
   };
+
+  addPassword(req, path, password)
 
   if (exists) {
     isPath = paths[path];
     if (isPath && isPath.check) {
       return next(isPath.error);
     }
-    req.body.user = exists;
+    req.user = exists;
     return next();
   }
   return !exists && path === ROUTES.SIGNUP ? next() : next(ERRORS.USER_NOT_REGISTERED);
 };
 
-export { dataValidator, userValidator, tokenDecoder };
+export { userValidator, tokenDecoder };

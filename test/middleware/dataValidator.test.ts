@@ -12,7 +12,6 @@ describe('Data Validator', () => {
       .request(server)
       .post("/api/v1/signup")
       .send({});
-
     expect(response).to.have.status(400);
   });
 
@@ -20,7 +19,7 @@ describe('Data Validator', () => {
     const response = await chai
       .request(server)
       .post("/api/v1/signup")
-      .send({ user: { email: "invalid" } });
+      .send({email: "invalid" });
 
     expect(response).to.have.status(400);
   });

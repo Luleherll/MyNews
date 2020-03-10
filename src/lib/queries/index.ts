@@ -12,4 +12,6 @@ export default class ModelQueries {
   }
 
   static update = async (model: Model, attributes: object) => model.update(attributes)
+
+  static 
 }

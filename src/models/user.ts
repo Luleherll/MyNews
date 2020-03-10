@@ -1,7 +1,8 @@
 "use strict";
 
+import { Hash } from "../utils";
+
 const Sequelize = require("sequelize");
-import bcrypt from 'bcryptjs';
 
 class User extends Sequelize.Model {
   static init(sequelize) {
@@ -42,11 +43,7 @@ class User extends Sequelize.Model {
       {
         sequelize,
         hooks: {
-          beforeSave: (user) => {
-            if (user.password) {
-              user.password = bcrypt.hashSync(user.password, 8);
-            }
-          },
+          beforeCreate: (user) => user.password = Hash.makeHash(user.password)
         }
       }
     );
@@ -54,11 +51,10 @@ class User extends Sequelize.Model {
 
   static associate(models) {
     this.hasMany(models.News);
+    this.hasMany(models.RefreshToken)
   }
 
-  validatePassword(password: string) {
-    return bcrypt.compareSync(password, this.password)
-  }
+  validatePassword = (password: string) =>  Hash.compareHash(password, this.password);
 
   filtered() {
     const { id, updatedAt, createdAt, password, ...other} = this.dataValues;

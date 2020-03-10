@@ -1,15 +1,15 @@
 import * as JWT from "jsonwebtoken";
-import { JWT_ISSUER, JWT_SECRET, ONE_HOUR, SEVEN_DAYS } from "../config";
+import { JWT_ISSUER, JWT_SECRET, ONE_HOUR } from "../config";
 
 export default class JwtUtil {
   private static signToken = (sub: string, exp?) => {
-    const expiresIn = exp || SEVEN_DAYS;
+    const expiresIn = exp || null;
     return JWT.sign(
       {
         iss: JWT_ISSUER,
         sub,
         iat: new Date().getTime(),
-        expiresIn: expiresIn
+        expiresIn
       },
       JWT_SECRET
     );

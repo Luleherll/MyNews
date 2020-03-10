@@ -1,5 +1,7 @@
 "use strict";
 
+import { MYNEWS } from "../lib/constants";
+
 const Sequelize = require("sequelize");
 
 class News extends Sequelize.Model {
@@ -16,26 +18,30 @@ class News extends Sequelize.Model {
         title: Sequelize.STRING,
         description: Sequelize.STRING,
         content: Sequelize.STRING,
-        Author: {
-          type: Sequelize.UUID,
-          references: {
-            model: "Users",
-            key: "id"
-          }
+        url: {
+          type: Sequelize.STRING,
+          unique: true,
+          allowNull: false
         },
-        url: Sequelize.STRING,
         urlToImage: Sequelize.STRING,
-        publishedAt: Sequelize.DATE,
         tags: Sequelize.ARRAY(Sequelize.STRING),
-        source: Sequelize.STRING
+        source: {
+          type: Sequelize.STRING,
+          defaultValue: MYNEWS
+        },
       },
       { sequelize }
     );
   }
 
   static associate(models) {
-    this.belongsTo(models.User);
+    this.belongsTo(models.User, { as: 'User'});
     this.belongsToMany(models.Tag, { through: "NewsTags" });
+  }
+
+  filtered() {
+    const { id, userId, createdAt, ...other} = this.dataValues;
+    return {...other, publishedAt: this.dataValues.createdAt};
   }
 }
 

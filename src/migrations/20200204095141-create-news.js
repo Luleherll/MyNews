@@ -10,6 +10,7 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4
       },
       title: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       description: {
@@ -18,29 +19,20 @@ module.exports = {
       content: {
         type: Sequelize.TEXT
       },
-      Author: {
-        type: Sequelize.UUID,
-        references: {
-          model: 'Users',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
       url: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true,
+        aloowNull: false
       },
       urlToImage: {
         type: Sequelize.STRING
-      },
-      publishedAt: {
-        type: Sequelize.DATE
       },
       tags: {
         type: Sequelize.ARRAY(Sequelize.STRING)
       },
       source: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        defaultValue: 'mynews'
       },
       createdAt: {
         allowNull: false,
