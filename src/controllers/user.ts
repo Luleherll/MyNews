@@ -46,7 +46,7 @@ export default class UserController {
   refreshToken = async(req, res, next) => {
     const { user: { id }, headers: { authorization } } = req;
 
-    let user = await Queries.findData(this.model, { id })
+    let user = await Queries.findOne(this.model, { id })
     let token = await user.getRefreshTokens()
     token = token.find( token => token.value === authorization.split(' ')[1])
     if (!token) { return Response.failure(res, INVALID_REFRESH_TOKEN , 401) }

@@ -3,7 +3,7 @@ import { Model } from "sequelize/types";
 export default class ModelQueries {
   static addData = (model: any, data: Object, permit: string[]) => model.create(data, { fields: permit })
 
-  static findData = async (model, clause, attributes = null) => {
+  static findOne = async (model, clause, attributes = null) => {
     const data = attributes
       ? await model.findOne({ where: clause, attributes })
       : await model.findOne({ where: clause });
@@ -11,7 +11,7 @@ export default class ModelQueries {
     return data;
   }
 
-  static update = async (model: Model, attributes: object) => model.update(attributes)
+  static findAll = async(model, clause?) => await model.findAll();
 
-  static 
+  static update = async (model: Model, attributes: object) => model.update(attributes)
 }
