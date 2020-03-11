@@ -1,6 +1,7 @@
 import { Response } from "../utils";
 import { NEWS_POST_EXISTS, SEQUELIZE_UNIQUE_CONSTRAINT } from "../lib/constants/errors";
 import Queries from "../lib/queries";
+import { NewsAPI } from '../utils';
 
 export default class NewsController {
   model: any;
@@ -27,7 +28,8 @@ export default class NewsController {
 
   getNews = async(req, res, next) => {
     const news = await Queries.findAll(this.model);
+    const {articles} = await NewsAPI.fromAllSources();
 
-    return Response.success(res, news);
+    return Response.success(res, [...news, ...articles]);
   }
 }
