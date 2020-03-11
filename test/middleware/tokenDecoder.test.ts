@@ -5,6 +5,7 @@ import sinon from "sinon";
 import { accessToken } from "../mocks";
 import { JwtUtil } from "../../src/utils";
 import { tokenDecoder } from "../../src/middleware";
+import { ERRORS } from "../../src/lib/constants";
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -43,6 +44,6 @@ describe("Token Decoder", () => {
     const nextSpy = sinon.spy();
     await tokenDecoder({ route: { path: "/secured" }, body: {}, headers: { authorization: accessToken } }, {}, nextSpy);
 
-    expect(nextSpy.calledWith("invalid jwt")).to.be.true;
+    expect(nextSpy.calledWith(ERRORS.UNAUTHORIZED)).to.be.true;
   });
 });

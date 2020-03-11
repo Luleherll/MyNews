@@ -2,6 +2,7 @@ import Queries from "../lib/queries";
 import DB from "../models";
 import { JwtUtil } from "../utils";
 import { ERRORS, ROUTES } from "../lib/constants";
+import { Logger } from "../config";
 
 // Password reset helper
 const addPassword = (req, path, password) => {
@@ -14,17 +15,16 @@ const tokenDecoder = (req: any, res: any, next: any) => {
   const { path } = req.route;
   const emailBacklinks = { [ROUTES.VERIFY_EMAIL]: 1, [ROUTES.PASSWORD_RESET]: 1 };
   let token: string = emailBacklinks[path] ? req.query.code : req.headers.authorization;
+  if (!token) { return next(ERRORS.UNAUTHORIZED); }
   token = token.split(" ")[1];
-  const subject = JwtUtil.decodeToken(token);
+  const { error, value } = JwtUtil.decodeToken(token);
 
-  if (subject.error) {
-    if (subject.error !== "jwt expired") {
-      return next(subject.error);
-    }
-    return next(ERRORS.EXPIRED_JWT);
+  if (error) {
+    Logger.info({message: error, token})
+    return emailBacklinks[path] ? next(ERRORS.EXPIRED_LINK) : next(ERRORS.UNAUTHORIZED);
   }
 
-  req.user = subject.value;
+  req.user = value;
   next();
 };
 
@@ -32,7 +32,7 @@ const userValidator = async (req: any, res: any, next: any) => {
   const { email, password } = req.user || req.body;
   const { path } = req.route;
   let isPath;
-  const exists = await Queries.findData(DB.User, { email });
+  const exists = await Queries.findOne(DB.User, { email });
   const paths = {
     [ROUTES.SIGNUP]: { check: path === ROUTES.SIGNUP, error: ERRORS.USER_EXISTS },
     [ROUTES.LOGIN]: { check: path === ROUTES.LOGIN && exists && !exists.validatePassword(password), error: ERRORS.INVALID_CREDENTIALS }
