@@ -127,4 +127,18 @@ describe("User", () => {
         expect(response).to.have.status(200);
       });
     });
+
+    describe('Detail update', () => {
+      it('should be successful', async() => {
+        sandBox.stub(DB.User, "findOne").returns(newUser);
+        sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: { user: "test@dev.com" } });
+        
+        const response = await chai
+          .request(server)
+          .put("/api/v1/update-profile")
+          .set({'Authorization': accessToken})
+  
+        expect(response).to.have.status(200);
+      });
+    });
 });

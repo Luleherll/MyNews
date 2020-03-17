@@ -36,7 +36,7 @@ export default class NewsController {
       }
       return acc;
     }, {});
-    limit = !limit ? 20 : limit;
+    limit = limit || 20;
     let news = await Queries.findAll(this.model, { columns, term }, page, limit);
     news.rows = news.rows.map(result => {
       result = result.filtered();

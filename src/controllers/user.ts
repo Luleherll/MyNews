@@ -72,4 +72,13 @@ export default class UserController {
 
     return Response.success(res, { accessToken }, 200);
   }
+
+  updateProfile = async(req, res, next) => {
+    let { body: updates, user } = req;
+
+    user = await Queries.update(user, updates);
+    user = user.filtered()
+
+    return Response.success(res, user, 200);
+  }
 }

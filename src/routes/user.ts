@@ -9,6 +9,7 @@ export default (router: any) => {
   router.route(ROUTES.REFRESH_TOKEN).get(tokenDecoder, user.refreshToken)
   router.route(ROUTES.PASSWORD_RESET).post(dataValidator, userValidator, user.passwordResetRequest)
   router.route(ROUTES.PASSWORD_RESET).get(tokenDecoder, userValidator, user.passwordResetHandler)
+  router.route(ROUTES.PROFILE_UPDATE).put(tokenDecoder, dataValidator, userValidator, user.updateProfile)
 
   return router;
 }

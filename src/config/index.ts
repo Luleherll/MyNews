@@ -27,7 +27,7 @@ const DB: { [key: string]: DB } = {
     password: process.env.DB_PASSWORD
   }
 };
-const ONE_HOUR = 3600;
+const ONE_HOUR = Math.floor(Date.now() / 1000) + (60 * 60);
 const SIX_MONTHS = 15778463;
 
 export { PORT, NODE_ENV, DB, JWT_ISSUER, JWT_SECRET, Logger, logEnv, SENDGRID_API_KEY, MAIL_RETURN_URL, AUTH_EMAIL, ONE_HOUR, SIX_MONTHS, NEWS_API_KEY };
