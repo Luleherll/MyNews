@@ -12,7 +12,8 @@ const newUser = {
   validatePassword: () => true,
   createRefreshToken: async() => accessToken,
   getRefreshTokens: async() => [{value: accessToken.split(' ')[1]}],
-  createNews: async() => newPost
+  createNews: async() => newPost,
+  update: async() => newUser
 };
 
 const unverifiedUser = {

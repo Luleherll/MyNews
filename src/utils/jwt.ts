@@ -2,17 +2,14 @@ import * as JWT from "jsonwebtoken";
 import { JWT_ISSUER, JWT_SECRET, ONE_HOUR } from "../config";
 
 export default class JwtUtil {
-  private static signToken = (sub: string, exp?) => {
-    const expiresIn = exp || null;
-    return JWT.sign(
-      {
+  private static signToken = (sub: string, exp?: number) => {
+    const token = {
         iss: JWT_ISSUER,
         sub,
         iat: new Date().getTime(),
-        expiresIn
-      },
-      JWT_SECRET
-    );
+      }
+
+    return exp ? JWT.sign({...token, exp}, JWT_SECRET) : JWT.sign(token,JWT_SECRET);
   };
 
   static getAuthToken = (user) => {
