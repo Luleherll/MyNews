@@ -17,4 +17,9 @@ interface IError {
   status: number;
 }
 
-export { DB, IEmailTemplate, IError }
+interface INewsFilter {
+  columns?: object;
+  term?: string;
+}
+
+export { DB, IEmailTemplate, IError, INewsFilter }

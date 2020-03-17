@@ -40,8 +40,8 @@ class News extends Sequelize.Model {
   }
 
   filtered() {
-    const { id, userId, createdAt, ...other} = this.dataValues;
-    return {...other, publishedAt: this.dataValues.createdAt};
+    const { id, UserId, createdAt, ...other} = this.dataValues;
+    return {...other, publishedAt: this.dataValues.createdAt, author: this.dataValues.UserId};
   }
 }
 
