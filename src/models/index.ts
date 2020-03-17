@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import path from 'path';
-import { Sequelize } from 'sequelize';
+import { Sequelize, Op } from 'sequelize';
 import { NODE_ENV } from '../config';
 import conf from '../config/config';
 import { errorHandlers } from '../utils';
@@ -36,5 +36,5 @@ for (const model of Object.keys(models)) {
 
 const connection = sequelize;
 
-export { connection  }
+export { connection, Op  }
 export default models;

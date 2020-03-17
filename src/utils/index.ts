@@ -8,4 +8,17 @@ import { NEWS_API_KEY } from '../config';
 
 const NewsAPI = new ExternalNews(NEWS_API_KEY)
 
-export { JwtUtil, errorHandlers, Response, Mailer, Hash, NewsAPI }
+const getExternalNews = async(externalFilter): Promise<{totalResults: number, articles: Array<any> }> => {
+  for (const key in externalFilter) {
+    if (externalFilter.hasOwnProperty(key) && !externalFilter[key]) {
+      delete externalFilter[key];
+    }
+  }
+
+  const { totalResults, articles } = externalFilter.q
+    ? await NewsAPI.filtered(externalFilter)
+    : await NewsAPI.fromAllSources(externalFilter);
+  return { totalResults, articles }
+}
+
+export { JwtUtil, errorHandlers, Response, Mailer, Hash, NewsAPI, getExternalNews }

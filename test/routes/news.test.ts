@@ -54,7 +54,7 @@ describe("News", () => {
       sandBox.stub(DB.User, "findOne").returns(newUser);
       sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: { user: "test@dev.com" } });
       sandBox.stub(NewsAPI.news.v2, "sources").returns(Promise.resolve({ sources: [{ id: 'test', language: 'en' }] }));
-      sandBox.stub(NewsAPI.news.v2, "everything").returns(Promise.resolve({ articles: [{source: { id: 'test'}}] }));
+      sandBox.stub(NewsAPI.news.v2, "everything").returns(Promise.resolve({totalResults: 1, articles: [{source: { id: 'test'}}] }));
 
       const response = await chai
         .request(server)
@@ -62,6 +62,22 @@ describe("News", () => {
         .set({ Authorization: accessToken })
 
       expect(response).to.have.status(200);
+  });
+
+  it('should filter news', async() => {
+    sandBox.stub(DB.User, "findOne").returns(newUser);
+    sandBox.stub(JwtUtil, "decodeToken").returns({ error: null, value: { user: "test@dev.com" } });
+    sandBox.stub(NewsAPI.news.v2, "everything").returns(Promise.resolve({totalResults: 1, articles: [{source: { id: 'test'}}] }));
+    const spy = sinon.spy(NewsAPI, 'filtered');
+
+    const response = await chai
+      .request(server)
+      .get("/api/v1/news")
+      .set({ Authorization: accessToken })
+      .query({limit: 5, term: 'test' })
+
+    expect(spy.calledWith({limit: 3, q: 'test' })).to.be.true;
+    expect(response).to.have.status(200);
   });
 });
 });
